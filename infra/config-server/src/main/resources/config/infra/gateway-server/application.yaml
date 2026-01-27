@@ -3,90 +3,73 @@ spring:
     gateway:
       discovery.locator.enabled: true
       routes:
-        #         categories
-        #          1. Маршруты админа (CategoryAdminController)
         - id: admin_categories_route
           uri: lb://main-service
           predicates:
             - Path=/admin/categories/**
 
-        #          2. Публичные маршруты (CategoryPublicController)
         - id: public_categories_route
           uri: lb://main-service
           predicates:
             - Path=/categories/**
 
 
-        #         compilations
-        #          1. Маршруты админа (CompilationAdminController)
         - id: admin_compilation_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/admin/compilations/**
 
-        #          2. Публичные маршруты (CompilationPublicController)
         - id: public_compilation_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/compilations/**
 
 
-        #         comments
-        # 1. Маршруты пользователя (UserCommentsController)
         - id: user_comment_event_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/users/{userId}/events/{eventId}/comments/**
 
         - id: user_comment_all_user_comments_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/users/{userId}/comments/**
 
-        # 2. Публичные маршруты (PublicCommentsController)
         - id: public_comment_event_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/events/{eventId}/comments/**
 
-        # 3. Маршруты админа (AdminCommentsController)
         - id: admin_comment_event_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/admin/comments/**
 
 
-        #         events
-        # 1. Маршруты пользователя (UserEventsController)
         - id: user_event_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/users/{userId}/events/**
 
-        # 2. Маршруты администратора (AdminEventsController)
         - id: admin_event_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/admin/events/**
 
-        # 3. Маршруты публичные (PublicEventsController)
         - id: public_event_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/events/**
 
 
-        #         requests
         - id: user_request_route
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/users/{userId}/requests/**
 
 
-        #         users
-        # 1. Маршруты администратора (UserAdminController)
         - id: admin_user_route_delete
-          uri: lb://ewm-service
+          uri: lb://main-service
           predicates:
             - Path=/admin/users/**
 
