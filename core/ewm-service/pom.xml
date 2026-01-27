@@ -11,7 +11,7 @@
     </parent>
 
 
-    <artifactId>ewm-service</artifactId>
+    <artifactId>main-service</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
