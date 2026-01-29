@@ -13,7 +13,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>ewm-service</module>
+        <module>user-service</module>
+        <module>interaction-api</module>
     </modules>
 
 </project>
