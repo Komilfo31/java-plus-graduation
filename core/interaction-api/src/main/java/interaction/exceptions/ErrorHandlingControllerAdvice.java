@@ -3,11 +3,14 @@ package interaction.exceptions;
 import interaction.exceptions.exception.ConflictException;
 import interaction.exceptions.exception.DuplicatedDataException;
 import interaction.exceptions.exception.NotFoundException;
+import interaction.exceptions.exception.ValidationException;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,6 +23,7 @@ import java.util.List;
 import static interaction.constants.Constants.PATTERN_FORMATE_DATE;
 
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ErrorHandlingControllerAdvice {
     private static final Logger log = LoggerFactory.getLogger(ErrorHandlingControllerAdvice.class);
 
@@ -54,7 +58,7 @@ public class ErrorHandlingControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         // проверяем, наличие ошибок при валидации значений в полях объекта
-        log.warn("400 {}", e.getMessage());
+        log.error("400 {}", e.getMessage());
         String message = e.getBindingResult().getFieldErrors().stream()
                 .findFirst()
                 .map(fe -> "Field: %s. Error: %s. Value: %s"
@@ -69,7 +73,7 @@ public class ErrorHandlingControllerAdvice {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError onNotFoundException(NotFoundException e) {
-        log.warn("404 {}", e.getMessage());
+        log.error("404 {}", e.getMessage());
 
         return api(HttpStatus.NOT_FOUND,
                 "The required object was not found.",
@@ -80,7 +84,7 @@ public class ErrorHandlingControllerAdvice {
     @ExceptionHandler(DuplicatedDataException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError onDuplicatedDataException(DuplicatedDataException e) {
-        log.warn("409 {}", e.getMessage());
+        log.error("409 {}", e.getMessage());
 
         return api(HttpStatus.CONFLICT,
                 "Duplication of an object.",
@@ -92,7 +96,7 @@ public class ErrorHandlingControllerAdvice {
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError onValidationException(ValidationException e) {
-        log.warn("400 {}", e.getMessage());
+        log.error("400 {}", e.getMessage());
 
         return api(HttpStatus.BAD_REQUEST,
                 "Incorrectly made request.",
@@ -108,6 +112,17 @@ public class ErrorHandlingControllerAdvice {
         return api(HttpStatus.CONFLICT,
                 "For the requested operation the conditions are not met.",
                 e.getMessage(),
+                null);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        log.warn("409: Required request body is missing");
+
+        return api(HttpStatus.CONFLICT,
+                "For the requested operation the conditions are not met.",
+                "Request body is required",
                 null);
     }
 }
