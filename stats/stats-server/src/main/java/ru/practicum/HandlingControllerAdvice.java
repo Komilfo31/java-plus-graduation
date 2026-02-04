@@ -36,10 +36,11 @@ public class HandlingControllerAdvice {
     /**
      * Обрабатывает все прочие необработанные исключения.
      */
-    @ExceptionHandler(Throwable.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleThrowable(final Throwable e) {
         log.error("500 INTERNAL SERVER ERROR: Необработанное исключение: {}", e.getMessage(), e);
         return Map.of("error", "INTERNAL_SERVER_ERROR", "message", "Произошла непредвиденная ошибка на сервере.");
     }
+
 }
