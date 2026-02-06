@@ -4,6 +4,7 @@ import interaction.model.event.dto.EventFullDto;
 import interaction.model.event.dto.EventShortDto;
 import interaction.model.event.dto.Location;
 import interaction.model.event.dto.NewEventDto;
+import interaction.model.event.dto.UpdateEventAdminRequest;
 import interaction.model.event.dto.UpdateEventUserRequest;
 import interaction.model.event.enums.EventState;
 import interaction.model.user.UserShortDto;
@@ -57,7 +58,7 @@ public class EventMapper {
         dto.setRequestModeration(event.getRequestModeration());
         dto.setState(event.getState().name());
         dto.setTitle(event.getTitle());
-        dto.setViews(event.getViews() != null ? event.getViews() : 0);
+        dto.setRating(event.getRating() != null ? event.getRating() : 0.0);
 
         return dto;
     }
@@ -85,7 +86,7 @@ public class EventMapper {
 
         dto.setPaid(event.getPaid());
         dto.setTitle(event.getTitle());
-        dto.setViews(event.getViews() != null ? event.getViews() : 0);
+        dto.setRating(event.getRating() != null ? event.getRating() : 0.0);
 
         return dto;
     }
@@ -140,20 +141,26 @@ public class EventMapper {
         event.setRequestModeration(dto.getRequestModeration() != null ? dto.getRequestModeration() : true);
         event.setTitle(dto.getTitle());
 
-        // связки
         event.setInitiatorId(userId);
         event.setCategory(category);
 
-        // координаты
         if (dto.getLocation() != null) {
             event.setLocationLat(dto.getLocation().getLat());
             event.setLocationLon(dto.getLocation().getLon());
         }
 
-        // технические поля
         event.setCreatedOn(LocalDateTime.now());
         event.setState(EventState.PENDING);
+        event.setRating(0.0);
 
+        return event;
+    }
+
+    public Event toEvent(Integer userId, NewEventDto dto, Category category, Double rating) {
+        Event event = toEvent(userId, dto, category);
+        if (event != null && rating != null) {
+            event.setRating(rating);
+        }
         return event;
     }
 

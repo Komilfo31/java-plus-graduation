@@ -1,4 +1,5 @@
 package ru.practicum.compilations.service;
+
 import interaction.exceptions.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

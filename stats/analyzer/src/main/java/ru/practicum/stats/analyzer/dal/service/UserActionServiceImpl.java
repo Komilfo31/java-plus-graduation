@@ -12,7 +12,7 @@ import ru.practicum.stats.analyzer.mapper.UserActionMapper;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserActionServiceImpl implements UserActionService{
+public class UserActionServiceImpl implements UserActionService {
     private static final double VIEW_WEIGHT = 0.4;
     private static final double REGISTER_WEIGHT = 0.8;
     private static final double LIKE_WEIGHT = 1.0;

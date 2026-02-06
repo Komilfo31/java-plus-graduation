@@ -36,4 +36,7 @@ public interface RequestFeignClient {
     @PostMapping("/requests/batch/status")
     List<ParticipationRequestDto> updateRequestsStatusBatch(
             @RequestBody RequestStatusUpdateRequest batchRequest);
+
+    @GetMapping("/users/{userId}")
+    List<ParticipationRequestDto> getRequestsByUserId(@PathVariable Integer userId);
 }

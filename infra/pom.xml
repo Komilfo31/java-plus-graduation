@@ -16,5 +16,5 @@
         <module>config-server</module>
         <module>discovery-server</module>
         <module>gateway-server</module>
-        </modules>
+    </modules>
 </project>

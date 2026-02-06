@@ -18,9 +18,11 @@ import java.util.Properties;
 @ConfigurationProperties(prefix = "aggregator.kafka")
 public class KafkaConfig {
 
-    private Producer producer;;
+    private Producer producer;
+    ;
 
-    private Consumer consumer;;
+    private Consumer consumer;
+    ;
 
     @NotEmpty(message = "Kafka topics must not be empty")
     private Map<String, String> topics = Collections.emptyMap();

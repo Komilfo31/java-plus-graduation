@@ -65,7 +65,7 @@ public class EventSimilarityProcessor implements Runnable, DisposableBean {
                     } catch (Exception e) {
                         log.error("Error processing record from topic={}, partition={}, offset={}",
                                 record.topic(), record.partition(), record.offset(), e);
-                        }
+                    }
                 }
 
                 if (!currentOffsets.isEmpty()) {

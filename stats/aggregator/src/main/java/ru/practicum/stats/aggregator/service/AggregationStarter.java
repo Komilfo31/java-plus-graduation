@@ -39,7 +39,6 @@ public class AggregationStarter implements DisposableBean {
     private final Duration consumeAttemptTimeout;
 
 
-
     public AggregationStarter(KafkaConfig kafkaConfig,
                               EventSimilarityServiceImpl eventSimilarityService) {
         Objects.requireNonNull(kafkaConfig, "KafkaConfig must not be null");
