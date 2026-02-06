@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package stats.message;
+
+option java_package = "ru.practicum.ewm.stats.proto";
+option java_multiple_files = true;
+
+message RecommendedEventProto {
+  int64 event_id = 1;
+  double score = 2;
+}

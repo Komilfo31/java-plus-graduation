@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -98,6 +99,6 @@ public class Event {
     @FieldDescription(value = "Заголовок")
     private String title;
 
-    @Builder.Default
-    private Integer views = 0;
+    @Transient
+    private Double rating;
 }

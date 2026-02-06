@@ -33,3 +33,11 @@ logging:
     com.netflix.discovery: DEBUG
     org.springframework.cloud.netflix.eureka: DEBUG
     org.springframework.cloud.client.discovery: DEBUG
+
+grpc:
+  client:
+    collector:
+      address: 'discovery:///collector'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext

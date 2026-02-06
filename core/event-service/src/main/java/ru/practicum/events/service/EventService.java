@@ -44,4 +44,8 @@ public interface EventService {
     Boolean existsById(Integer eventId);
 
     String getEventState(Integer eventId);
+
+    List<EventShortDto> getRecommendations(Integer userId, Integer from, Integer size);
+
+    void likeEvent(Integer eventId, Integer userId);
 }

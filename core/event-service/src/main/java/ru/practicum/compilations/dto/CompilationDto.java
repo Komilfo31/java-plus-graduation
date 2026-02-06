@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class  CompilationDto {
+public class CompilationDto {
     private Integer id;
     private String title;
     private Boolean pinned;

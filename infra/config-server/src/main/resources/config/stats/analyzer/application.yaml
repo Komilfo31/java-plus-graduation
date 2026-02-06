@@ -1,0 +1,71 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:6546/analyzer
+    username: analyzer
+    password: analyzer
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+analyzer:
+  kafka:
+    user-actions-consumer:
+      properties:
+        "key.deserializer": org.apache.kafka.common.serialization.LongDeserializer
+        "value.deserializer": ru.practicum.kafka.deserializer.UserActionAvroDeserializer
+        "group.id": "analyzer.user-actions.group.id"
+        "client.id": "analyzer-user-actions"
+        "bootstrap.servers": localhost:9092
+        "max.poll.records": 100
+        "fetch.max.bytes": 3072000
+        "max.partition.fetch.bytes": 3072000
+        "enable.auto.commit": true
+        "auto.offset.reset": "latest"
+
+    event-similarity-consumer:
+      properties:
+        "key.deserializer": org.apache.kafka.common.serialization.StringDeserializer
+        "value.deserializer": ru.practicum.kafka.deserializer.EventSimilarityDeserializer
+        "group.id": "analyzer.event-similarity.group.id"
+        "client.id": "analyzer-event-similarity"
+        "bootstrap.servers": localhost:9092
+        "max.poll.records": 100
+        "fetch.max.bytes": 3072000
+        "max.partition.fetch.bytes": 3072000
+        "enable.auto.commit": true
+        "auto.offset.reset": "latest"
+
+    topics:
+      user-actions: stats.user-actions.v1
+      events-similarity: stats.events-similarity.v1
+
+grpc:
+  server:
+    port: 0
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: INFO
+        web: DEBUG
+        transaction: INFO
+        transaction.interceptor: TRACE
+        orm.jpa.JpaTransactionManager: DEBUG
+      slf4j: DEBUG
+      hibernate:
+        SQL: DEBUG
+        type.descriptor.sql.BasicBined: TRACE
+    ru.practicum: DEBUG
+    com.netflix.discovery: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG
+    org.springframework.cloud.client.discovery: DEBUG

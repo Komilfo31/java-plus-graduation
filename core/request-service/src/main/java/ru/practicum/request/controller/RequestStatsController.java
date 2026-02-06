@@ -50,7 +50,7 @@ public class RequestStatsController {
             if (batchRequest.getRequestIds() != null &&
                     batchRequest.getRequestIds().contains(request.getId())) {
                 request.setStatus(RequestStatus.CONFIRMED);
-            }  else if (batchRequest.getStatus() != null) {
+            } else if (batchRequest.getStatus() != null) {
                 request.setStatus(batchRequest.getStatus());
             }
         }

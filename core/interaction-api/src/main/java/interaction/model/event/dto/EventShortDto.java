@@ -39,5 +39,5 @@ public class EventShortDto {
     @Size(min = 3, max = 120, message = "Заголовок должен содержать от 3 до 120 символов")
     private String title;
 
-    private Integer views;
+    private double rating;
 }

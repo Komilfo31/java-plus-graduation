@@ -12,6 +12,7 @@ import interaction.model.user.UserShortDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.client.CollectorClient;
 import ru.practicum.request.mapper.RequestMapper;
 import ru.practicum.request.model.Request;
 import ru.practicum.request.repository.RequestRepository;
@@ -28,13 +29,14 @@ public class RequestServiceImpl implements RequestService {
     private final EventFeignClient eventFeignClient;
     private final RequestRepository requestRepository;
     private final RequestMapper requestMapper;
+    private final CollectorClient collectorClient;
 
     @Override
     @Transactional
     public ParticipationRequestDto createRequest(Integer userId, Integer eventId) {
         checkUserExists(userId);
 
-       EventFullDto event = getEventById(eventId);
+        EventFullDto event = getEventById(eventId);
 
         if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
             throw new ConflictException("Request already exists");
@@ -67,6 +69,9 @@ public class RequestServiceImpl implements RequestService {
         Boolean requestModeration = event.getRequestModeration();
         if (Boolean.FALSE.equals(requestModeration) || (participantLimit != null && participantLimit == 0)) {
             request.setStatus(RequestStatus.CONFIRMED);
+
+            sendRegistrationToCollector(userId, eventId);
+
         } else {
             request.setStatus(RequestStatus.PENDING);
         }
@@ -100,13 +105,45 @@ public class RequestServiceImpl implements RequestService {
             throw new ConflictException("Only pending requests can be canceled");
         }
 
-
-
         request.setStatus(RequestStatus.CANCELED);
 
         Request savedRequest = requestRepository.save(request);
 
         return requestMapper.toParticipationRequestDto(savedRequest);
+    }
+
+    @Transactional
+    public List<ParticipationRequestDto> updateRequestsStatusBatch(
+            RequestStatusUpdateRequest batchRequest) {
+
+        List<Integer> requestIds = batchRequest.getRequestIds();
+        RequestStatus newStatus = batchRequest.getStatus();
+
+        List<Request> requests = requestRepository.findAllById(requestIds);
+
+        if (requests.size() != requestIds.size()) {
+            throw new NotFoundException("Some requests not found");
+        }
+
+        for (Request request : requests) {
+            if (request.getStatus() != RequestStatus.PENDING) {
+                throw new ConflictException(
+                        "Request id=" + request.getId() + " is not in PENDING status"
+                );
+            }
+
+            request.setStatus(newStatus);
+
+            if (newStatus == RequestStatus.CONFIRMED) {
+                sendRegistrationToCollector(request.getRequesterId(), request.getEventId());
+            }
+        }
+
+        List<Request> savedRequests = requestRepository.saveAll(requests);
+
+        return savedRequests.stream()
+                .map(requestMapper::toParticipationRequestDto)
+                .collect(Collectors.toList());
     }
 
     private void checkUserExists(Integer userId) {
@@ -132,36 +169,9 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
-    @Transactional
-    public List<ParticipationRequestDto> updateRequestsStatusBatch(
-            RequestStatusUpdateRequest batchRequest) {
+    private void sendRegistrationToCollector(Integer userId, Integer eventId) {
 
-        List<Integer> requestIds = batchRequest.getRequestIds();
-        RequestStatus newStatus = batchRequest.getStatus();
+        collectorClient.saveRegister(userId.longValue(), eventId.longValue());
 
-        // Получаем все запросы
-        List<Request> requests = requestRepository.findAllById(requestIds);
-
-        if (requests.size() != requestIds.size()) {
-            throw new NotFoundException("Some requests not found");
-        }
-
-        // Обновляем статус
-        for (Request request : requests) {
-            if (request.getStatus() != RequestStatus.PENDING) {
-                throw new ConflictException(
-                        "Request id=" + request.getId() + " is not in PENDING status"
-                );
-            }
-            request.setStatus(newStatus);
-        }
-
-        // Сохраняем
-        List<Request> savedRequests = requestRepository.saveAll(requests);
-
-        // Возвращаем DTO
-        return savedRequests.stream()
-                .map(requestMapper::toParticipationRequestDto)
-                .collect(Collectors.toList());
     }
 }

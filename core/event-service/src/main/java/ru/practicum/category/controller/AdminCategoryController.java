@@ -32,7 +32,7 @@ public class AdminCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto createCategory(@Valid  @RequestBody NewCategoryDto newCategoryDto) {
+    public CategoryDto createCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
         return categoryService.add(newCategoryDto);
     }
 
