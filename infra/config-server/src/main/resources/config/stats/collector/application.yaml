@@ -1,0 +1,23 @@
+grpc:
+  server:
+    port: 0
+    reflection-service-enabled: true
+
+collector:
+  kafka:
+    producer:
+      properties:
+        "bootstrap.servers": localhost:9092
+        "client.id": "stats.collector"
+        "key.serializer": org.apache.kafka.common.serialization.LongSerializer
+        "value.serializer": ru.practicum.kafka.serializer.GeneralAvroSerializer
+        "linger.ms": 0
+      topics:
+        user-actions: stats.user-actions.v1
+
+logging:
+  level:
+    ru.practicum: DEBUG
+    com.netflix.discovery: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG
+    org.springframework.cloud.client.discovery: DEBUG

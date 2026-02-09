@@ -48,6 +48,11 @@ public class RequestClientFallbackFactory implements FallbackFactory<RequestFeig
                 return Collections.emptyList();
             }
 
+            @Override
+            public List<ParticipationRequestDto> getRequestsByUserId(Integer userId) {
+                return List.of();
+            }
+
         };
     }
 }
